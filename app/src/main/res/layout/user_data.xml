@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="10dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:paddingTop="3dp"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/etAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Age"
+            android:paddingTop="3dp"
+            android:inputType="number"/>
+
+        <Spinner
+            android:id="@+id/spGender"
+            android:entries="@array/gender"
+            android:layout_width="match_parent"
+            android:paddingTop="3dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:paddingTop="3dp"
+            android:layout_height="wrap_content"
+            android:text="SAVE" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.cardview.widget.CardView>
