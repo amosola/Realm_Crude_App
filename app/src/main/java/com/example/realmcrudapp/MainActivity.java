@@ -3,6 +3,7 @@ package com.example.realmcrudapp;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,10 +16,12 @@ import com.example.realmcrudapp.databinding.ActivityMainBinding;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ActivityMainBinding binding;
     Realm realm;
+    Context context;
     private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +30,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(binding.getRoot());
 
         //------------> get realm instance <--------------
+
+
+
+        Realm.init(this);
         realm = Realm.getDefaultInstance();
+        RealmConfiguration.Builder  builder = new RealmConfiguration.Builder();
+        builder.allowWritesOnUiThread(true);
 
         binding.btninsert.setOnClickListener((View.OnClickListener) this);
         binding.btnUpdate.setOnClickListener((View.OnClickListener) this);
@@ -85,12 +94,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dataModel.setGender(gender.getSelectedItem().toString());
 
                 //----> calling realm.exectu... and passing datamodel object to copyTo Ream <---
-                realm.executeTransaction(new Realm.Transaction() {
+                new Thread(new Runnable() {
                     @Override
-                    public void execute(Realm realm) {
-                        realm.copyFromRealm(dataModel);
+                    public void run() {
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                realm.copyFromRealm(dataModel);
+                            }
+                        });
                     }
-                });
+                }).start();
             }
         });
     }
@@ -98,8 +112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void showData() {
         List<DataModel> dataModels = realm.where(DataModel.class).findAll();
+        binding.tvShowDetails.setText("");
         for (int i = 0; i < dataModels.size(); i++) {
-            binding.tvShowDetails.setText(
+            //-----> append so as not to empty old datamodel <--------
+            binding.tvShowDetails.append(
                     "Id"+dataModels.get(i).getId()+" " +
                             "Name "+ dataModels.get(i).getName()+" " +
                             "Age "+ dataModels.get(i).getAge()+" " +
